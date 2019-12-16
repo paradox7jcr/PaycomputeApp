@@ -1,22 +1,21 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Paycompute.Entity;
 using Paycompute.Models;
 using Paycompute.Services;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Paycompute.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
         private readonly IWebHostEnvironment _hostingEnvironment;
-
         public EmployeeController(IEmployeeService employeeService, IWebHostEnvironment hostingEnvironment)
         {
             _employeeService = employeeService;
@@ -25,7 +24,8 @@ namespace Paycompute.Controllers
 
         public IActionResult Index()
         {
-            var employees = _employeeService.GetAll().Select(employee => new EmployeeIndexViewModel{
+            var employees = _employeeService.GetAll().Select(employee => new EmployeeIndexViewModel
+            {
                 Id = employee.Id,
                 EmployeeNo = employee.EmployeeNo,
                 ImageUrl = employee.ImageUrl,
@@ -38,8 +38,14 @@ namespace Paycompute.Controllers
             return View(employees);
         }
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            var model = new EmployeeCreateViewModel();
+            return View(model);
+        }
         [HttpPost]
-        [ValidateAntiForgeryToken] //Prevents XSS Forgery Attacks
+        [ValidateAntiForgeryToken] //Prevents cross-site Request Forgery Attacks
         public async Task<IActionResult> Create(EmployeeCreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -56,18 +62,18 @@ namespace Paycompute.Controllers
                     Email = model.Email,
                     DOB = model.DOB,
                     DateJoined = model.DateJoined,
-                    Phone = model.Phone,
                     NationalInsuranceNumber = model.NationalInsuranceNumber,
                     PaymentMethod = model.PaymentMethod,
                     StudentLoan = model.StudentLoan,
                     UnionMember = model.UnionMember,
                     Address = model.Address,
                     City = model.City,
+                    Phone = model.Phone,
                     Postcode = model.Postcode,
                     Designation = model.Designation,
-                };
 
-                if(model.ImageUrl != null && model.ImageUrl.Length > 0)
+                };
+                if (model.ImageUrl != null && model.ImageUrl.Length > 0)
                 {
                     var uploadDir = @"images/employee";
                     var fileName = Path.GetFileNameWithoutExtension(model.ImageUrl.FileName);
@@ -84,13 +90,14 @@ namespace Paycompute.Controllers
             return View();
         }
 
-        [HttpGet]
+
         public IActionResult Edit(int id)
         {
             var employee = _employeeService.GetById(id);
             if (employee == null)
+            {
                 return NotFound();
-
+            }
             var model = new EmployeeEditViewModel()
             {
                 Id = employee.Id,
@@ -102,29 +109,30 @@ namespace Paycompute.Controllers
                 Email = employee.Email,
                 DOB = employee.DOB,
                 DateJoined = employee.DateJoined,
-                Phone = employee.Phone,
                 NationalInsuranceNumber = employee.NationalInsuranceNumber,
                 PaymentMethod = employee.PaymentMethod,
                 StudentLoan = employee.StudentLoan,
                 UnionMember = employee.UnionMember,
                 Address = employee.Address,
                 City = employee.City,
+                Phone = employee.Phone,
                 Postcode = employee.Postcode,
                 Designation = employee.Designation,
             };
-            CreateImageUrlIfExists(employee, model.ImageUrl);
             return View(model);
         }
-        
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EmployeeEditViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var employee = _employeeService.GetById(model.Id);
                 if (employee == null)
+                {
                     return NotFound();
-
+                }
                 employee.EmployeeNo = model.EmployeeNo;
                 employee.FirstName = model.FirstName;
                 employee.LastName = model.LastName;
@@ -142,7 +150,17 @@ namespace Paycompute.Controllers
                 employee.Address = model.Address;
                 employee.City = model.City;
                 employee.Postcode = model.Postcode;
-                CreateImageUrlIfExists(employee, model.ImageUrl);
+                if (model.ImageUrl != null && model.ImageUrl.Length > 0)
+                {
+                    var uploadDir = @"images/employee";
+                    var fileName = Path.GetFileNameWithoutExtension(model.ImageUrl.FileName);
+                    var extension = Path.GetExtension(model.ImageUrl.FileName);
+                    var webRootPath = _hostingEnvironment.WebRootPath;
+                    fileName = DateTime.UtcNow.ToString("yymmssfff") + fileName + extension;
+                    var path = Path.Combine(webRootPath, uploadDir, fileName);
+                    await model.ImageUrl.CopyToAsync(new FileStream(path, FileMode.Create));
+                    employee.ImageUrl = "/" + uploadDir + "/" + fileName;
+                }
                 await _employeeService.UpdateAsync(employee);
                 return RedirectToAction(nameof(Index));
             }
@@ -154,9 +172,10 @@ namespace Paycompute.Controllers
         {
             var employee = _employeeService.GetById(id);
             if (employee == null)
+            {
                 return NotFound();
-
-            var model = new EmployeeDetailViewModel()
+            }
+            EmployeeDetailViewModel model = new EmployeeDetailViewModel()
             {
                 Id = employee.Id,
                 EmployeeNo = employee.EmployeeNo,
@@ -174,10 +193,9 @@ namespace Paycompute.Controllers
                 Address = employee.Address,
                 City = employee.City,
                 ImageUrl = employee.ImageUrl,
-                Postcode = employee.Postcode,
-
+                Postcode = employee.Postcode
             };
-            return View();
+            return View(model);
         }
 
         [HttpGet]
@@ -185,11 +203,13 @@ namespace Paycompute.Controllers
         {
             var employee = _employeeService.GetById(id);
             if (employee == null)
+            {
                 return NotFound();
+            }
             var model = new EmployeeDeleteViewModel()
             {
                 Id = employee.Id,
-                FullName = employee.FullName,
+                FullName = employee.FullName
             };
             return View(model);
         }
@@ -202,23 +222,5 @@ namespace Paycompute.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        #region [Private Helpers]
-
-        private async void CreateImageUrlIfExists(Employee employee, IFormFile image)
-        {
-            if(image != null && image.Length > 0)
-            {
-                var uploadDir = @"images/employee";
-                var fileName = Path.GetFileNameWithoutExtension(image.FileName);
-                var extension = Path.GetExtension(image.FileName);
-                var webRootPath = _hostingEnvironment.WebRootPath;
-                fileName = DateTime.UtcNow.ToString("yymmssfff") + fileName + extension;
-                var path = Path.Combine(webRootPath, uploadDir, fileName);
-                await image.CopyToAsync(new FileStream(path, FileMode.Create));
-                employee.ImageUrl = "/" + uploadDir + "/" + fileName;
-            }
-        }
-
-        #endregion
     }
 }

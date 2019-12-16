@@ -179,3 +179,7 @@ C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Pay
 C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Paycompute.csproj.CopyComplete
 C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Shared\_CookieConsentPartial.cshtml.g.cs
 C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Employee\Index.cshtml.g.cs
+C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Employee\Create.cshtml.g.cs
+C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Employee\Edit.cshtml.g.cs
+C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Employee\Detail.cshtml.g.cs
+C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Employee\Delete.cshtml.g.cs
