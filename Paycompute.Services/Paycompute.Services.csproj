@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Paycompute.Entity\Paycompute.Entity.csproj" />
     <ProjectReference Include="..\Paycomputer.Persistence\Paycomputer.Persistence.csproj" />
   </ItemGroup>
