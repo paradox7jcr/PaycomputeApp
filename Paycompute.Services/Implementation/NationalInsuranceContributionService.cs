@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Paycompute.Services.Implementation
 {
-    class NationalInsuranceContributionService : INationalInsuranceContributionService
+    public class NationalInsuranceContributionService : INationalInsuranceContributionService
     {
         private decimal NIRate;
         private decimal NIC;
@@ -12,7 +12,7 @@ namespace Paycompute.Services.Implementation
         {
             if (totalAmount <= 719)
             {
-                //Lower Earning Limit Rate & Below Primary Threshhold
+                //Lower Earning Limit Rate & Below Primary Threshold
                 NIRate = 0.0m;
                 NIC = 0m;
             }
