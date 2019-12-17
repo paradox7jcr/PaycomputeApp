@@ -12,21 +12,16 @@ namespace Paycompute.Services.Implementation
     public class PayComputationService : IPayComputationService
     {
         private readonly ApplicationDbContext _context;
-        private decimal contractualEarnings;
-        private decimal overtimeHours;
         public PayComputationService(ApplicationDbContext context)
         {
             _context = context;
         }
         public decimal ContractualEarnings(decimal contractualHours, decimal hoursWorked, decimal hourlyRate)
         {
+            var contractualEarnings = contractualHours * hourlyRate;
             if(hoursWorked < contractualHours)
             {
                 contractualEarnings = hoursWorked * hourlyRate;
-            }
-            else
-            {
-                contractualEarnings = contractualHours * hourlyRate;
             }
             return contractualEarnings;
         }
@@ -53,7 +48,12 @@ namespace Paycompute.Services.Implementation
 
         public PaymentRecord GetById(int id)
         {
-            return _context.PaymentRecords.Where(pay => pay.Id == id).FirstOrDefault();
+            return _context.PaymentRecords.FirstOrDefault(pay => pay.Id == id);
+        }
+
+        public TaxYear GetTaxYearById(int id)
+        {
+            return _context.TaxYears.FirstOrDefault(year => year.Id == id);
         }
 
         public decimal NetPay(decimal totalEarnings, decimal totalDeduction)
@@ -68,15 +68,13 @@ namespace Paycompute.Services.Implementation
 
         public decimal OvertimeHours(decimal hoursWorked, decimal contractualHours)
         {
-            if (hoursWorked > contractualHours) {
-                overtimeHours = hoursWorked - contractualHours;
-                return overtimeHours;
-            }
-            else
+            var overtimeHours = 0.00m;
+            if (hoursWorked > contractualHours)
             {
-                overtimeHours = 0.00m;
-                return overtimeHours;
+                overtimeHours = hoursWorked - contractualHours;
             }
+
+            return overtimeHours;
         }
 
         public decimal OvertimeRate(decimal hourlyRate)
