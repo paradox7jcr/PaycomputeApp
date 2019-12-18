@@ -191,3 +191,6 @@ C:\Users\parad\source\repos\PaycomputeApp\Paycompute\bin\Debug\netcoreapp3.0\Sys
 C:\Users\parad\source\repos\PaycomputeApp\Paycompute\bin\Debug\netcoreapp3.0\System.Web.WebPages.dll
 C:\Users\parad\source\repos\PaycomputeApp\Paycompute\bin\Debug\netcoreapp3.0\Microsoft.Web.Infrastructure.dll
 C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Pay\Index.cshtml.g.cs
+C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Pay\Create.cshtml.g.cs
+C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Pay\Detail.cshtml.g.cs
+C:\Users\parad\source\repos\PaycomputeApp\Paycompute\obj\Debug\netcoreapp3.0\Razor\Views\Pay\Payslip.cshtml.g.cs

@@ -13,6 +13,9 @@
         "packagesPath": "C:\\Users\\parad\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\parad\\source\\repos\\PaycomputeApp\\Paycompute.Entity\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
           "C:\\Users\\parad\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
